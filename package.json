@@ -1,0 +1,31 @@
+{
+  "name": "github-repo-monitor",
+  "version": "1.0.0",
+  "author": "Yevhen Udovychenko",
+  "description": "GitHub repository monitor that checks for updates, pulls the main branch, and runs docker compose up in the cloned repository directory",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "start:daemon": "npm run build && pm2 start ecosystem.config.js",
+    "stop": "pm2 stop github-repo-monitor",
+    "restart": "pm2 restart github-repo-monitor",
+    "logs": "pm2 logs github-repo-monitor",
+    "status": "pm2 status",
+    "cleanup": "pm2 delete github-repo-monitor"
+  },
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "node-cron": "^3.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "@types/node-cron": "^3.0.11",
+    "pm2": "^6.0.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
