@@ -1,10 +1,20 @@
 import { CheckResult, Config } from '../types/index';
-import { execInRepo } from './git-utils';
+import { execInRepo, checkIsRepositoryExists } from './git-utils';
 
 const REMOTE_NAME = 'origin';
 
 export const checkForUpdates = async (config: Config): Promise<CheckResult> => {
   try {
+    // Check if repository exists
+    const exists = await checkIsRepositoryExists(config.REPO_PATH);
+    if (!exists) {
+      return {
+        hasUpdates: false,
+        output: '',
+        error: `Repository path does not exist: ${config.REPO_PATH}. Please restart the application to clone it.`,
+      };
+    }
+
     // Fetch latest commits from remote without pull
     await execInRepo(`git fetch ${REMOTE_NAME}`, config.REPO_PATH);
 
@@ -40,6 +50,13 @@ export const checkForUpdates = async (config: Config): Promise<CheckResult> => {
 
 export const pullBranch = async (config: Config): Promise<void> => {
   try {
+    // Check if repository exists
+    const exists = await checkIsRepositoryExists(config.REPO_PATH);
+    if (!exists) {
+      console.error(`❌ Repository path does not exist: ${config.REPO_PATH}`);
+      return;
+    }
+
     const stdout = await execInRepo(
       `git pull ${REMOTE_NAME} ${config.BRANCH}`,
       config.REPO_PATH

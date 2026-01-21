@@ -3,6 +3,7 @@ import * as path from 'path';
 import { Config } from '../types/index';
 import { checkForUpdates, pullBranch } from './git';
 import { startDockerCompose } from './docker';
+import { copyEnvFile } from './git-utils';
 
 const checkAndPull = async (config: Config): Promise<void> => {
   const timestamp = new Date().toLocaleString('en-US');
@@ -21,6 +22,7 @@ const checkAndPull = async (config: Config): Promise<void> => {
     if (result.hasUpdates) {
       console.log('🔄 Pulling updates...');
       await pullBranch(config);
+      await copyEnvFile(config.CUSTOM_ENV_PATH, config.REPO_PATH);
       await startDockerCompose(config);
     }
   } catch (error) {
@@ -34,8 +36,6 @@ export const startScheduler = (config: Config): cron.ScheduledTask => {
   console.log(`📁 Directory: ${path.resolve(config.REPO_PATH)}`);
   console.log(`🌿 Branch: ${config.BRANCH}`);
   console.log('⏱️  Checking every 15 minutes');
-
-  checkAndPull(config);
 
   const task = cron.schedule('*/15 * * * *', () => {
     checkAndPull(config);

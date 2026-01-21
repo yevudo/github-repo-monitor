@@ -1,6 +1,7 @@
 import { getConfig } from './lib/config';
-import { checkIsRepositoryExists, cloneRepository } from './lib/git-utils';
+import { checkIsRepositoryExists, cloneRepository, copyEnvFile } from './lib/git-utils';
 import { startScheduler } from './lib/scheduler';
+import { startDockerCompose } from './lib/docker';
 
 (async () => {
   try {
@@ -9,6 +10,10 @@ import { startScheduler } from './lib/scheduler';
     const exists = await checkIsRepositoryExists(config.REPO_PATH);
     if (!exists) {
       await cloneRepository(config.REPO_URL, config.BRANCH, config.REPO_PATH);
+      await copyEnvFile(config.CUSTOM_ENV_PATH, config.REPO_PATH);
+      console.log('✅ Repository cloned successfully.');
+      await startDockerCompose(config);
+      console.log('✅ Docker containers started successfully.');
     }
 
     const schedulerTask = startScheduler(config);

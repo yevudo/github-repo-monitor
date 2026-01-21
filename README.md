@@ -1,13 +1,13 @@
 # GitHub Repository Monitor
 
-A Node.js application that monitors a GitHub repository for updates every 15 minutes, automatically pulls changes to the main branch, and restarts Docker services using `docker compose up -d`.
+A Node.js application that monitors a GitHub repository for updates every 15 minutes, automatically pulls changes to the main branch, and restarts Docker services using `docker compose up -d --build`.
 
 ## Features
 
 - 🔔 **Automated Monitoring**: Checks for repository updates every 15 minutes
 - 📥 **Auto Clone**: Automatically clones the repository on first run
 - 🔄 **Auto Pull**: Pulls the latest changes from the remote branch
-- 🐳 **Docker Integration**: Automatically runs `docker compose up -d` after pulling updates
+- 🐳 **Docker Integration**: Automatically runs `docker compose up -d --build` after pulling updates
 - 🌙 **Background Daemon**: Runs as a PM2 daemon process
 - 📝 **Logging**: All operations are logged with timestamps
 - ⚙️ **Configurable**: Easy configuration via `.env` file
@@ -161,7 +161,7 @@ github-repo-monitor/
 4. **Update & Deploy**
    - If updates are found:
      - Executes `git pull` to fetch and merge changes
-     - Runs `docker compose up -d` to restart services
+     - Runs `docker compose up -d --build` to restart services
    - Logs all operations with timestamps
 
 ### Cron Schedule
